@@ -1,6 +1,7 @@
 use std::io::stdin;
-use std::collections::HashMap;
 use std::process::exit;
+
+const KELVIN: f32 = 273.15;
 
 fn ask() {
     println!("\tF - Fahrenheit");
@@ -55,17 +56,19 @@ fn main() {
 
         let f: Box<dyn Fn(f32) -> f32> = match (from.as_str(), to.as_str()) {
             ("f", "c") => Box::new(|x: f32| { (x - 32.0) * 5.0 / 9.0 }),
-            ("f", "k") => Box::new(|x: f32| { (x - 32.0) * 5.0 / 9.0 + 273.0 }),
             ("c", "f") => Box::new(|x: f32| { x * 9.0 / 5.0 + 32.0 }),
-            ("k", "f") => Box::new(|x: f32| { (x - 273.0) * 9.0 / 5.0 + 32.0 }),
-            ("k", "c") => Box::new(|x: f32| { x - 273.0 }),
-            ("c", "k") => Box::new(|x: f32| { x + 273.0 }),
+
+            ("f", "k") => Box::new(|x: f32| { (x - 32.0) * 5.0 / 9.0 + KELVIN }),
+            ("k", "f") => Box::new(|x: f32| { (x - KELVIN) * 9.0 / 5.0 + 32.0 }),
+
+            ("k", "c") => Box::new(|x: f32| { x - KELVIN }),
+            ("c", "k") => Box::new(|x: f32| { x + KELVIN }),
             _ if from == to => Box::new(|x: f32| { x }),
             _ => exit(0),
         };
 
         let value = ask_float("Please enter the value: ");
         let result = f(value);
-        println!("{} {}", result, to);
+        println!("{} {}", result, to.to_uppercase());
     }
 }
