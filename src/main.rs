@@ -1,43 +1,71 @@
 use std::io::stdin;
 use std::collections::HashMap;
+use std::process::exit;
+
+fn ask() {
+    println!("\tF - Fahrenheit");
+    println!("\tC - Celsius");
+    println!("\tK - Kelvin");
+    println!("\tExit - Quit the program");
+}
+
+fn get_lowered() -> String {
+    let mut input = String::new();
+    stdin().read_line(&mut input).expect("Cannot read line");
+    input.make_ascii_lowercase();
+    input.trim().to_string()
+}
+
+fn obtain_type(question: &str) -> String {
+    loop {
+        println!("{}", question);
+        ask();
+        let from = get_lowered();
+
+        match from.as_str() {
+            "f" | "c" | "k" => break from,
+            "exit" => exit(0),
+            _ => continue,
+        }
+    }
+}
+
+fn ask_float(question: &str) -> f32 {
+    loop {
+        println!("{}", question);
+        let from = get_lowered();
+
+        match from.as_str() {
+            "exit" => exit(0),
+            any => break match any.parse() {
+                Ok(e) => e,
+                Err(e) => {
+                    println!("{}", e);
+                    continue;
+                }
+            },
+        }
+    }
+}
 
 fn main() {
     loop {
-        println!("Please enter the x-th fibonacci sequence");
+        let from = obtain_type("Convert from which temperature scale: ");
+        let to = obtain_type("Convert to which temperature scale: ");
 
-        let mut input = String::new();
-        stdin().read_line(&mut input).expect("Cannot read line");
-
-        let n: i32 = match input.trim().parse() {
-            Ok(num) => num,
-            Err(_) => continue,
+        let f: Box<dyn Fn(f32) -> f32> = match (from.as_str(), to.as_str()) {
+            ("f", "c") => Box::new(|x: f32| { (x - 32.0) * 5.0 / 9.0 }),
+            ("f", "k") => Box::new(|x: f32| { (x - 32.0) * 5.0 / 9.0 + 273.0 }),
+            ("c", "f") => Box::new(|x: f32| { x * 9.0 / 5.0 + 32.0 }),
+            ("k", "f") => Box::new(|x: f32| { (x - 273.0) * 9.0 / 5.0 + 32.0 }),
+            ("k", "c") => Box::new(|x: f32| { x - 273.0 }),
+            ("c", "k") => Box::new(|x: f32| { x + 273.0 }),
+            _ if from == to => Box::new(|x: f32| { x }),
+            _ => exit(0),
         };
 
-        let mut cache = HashMap::new();
-        cache.insert(1, 1);
-        let fib = fib(n, &mut cache);
-//        let fib = slow_fib(n);
-        println!("Value: {}", fib);
+        let value = ask_float("Please enter the value: ");
+        let result = f(value);
+        println!("{} {}", result, to);
     }
 }
-
-fn slow_fib(x: i32) -> u64 {
-    if x <= 1 {
-        return x as u64;
-    }
-    slow_fib(x - 1) + slow_fib(x - 2)
-}
-
-fn fib(x: i32, cache: &mut HashMap<i32, u64>) -> u64 {
-    match cache.get(&x) {
-        Some(number) => *number,
-        _ if x > 1 => {
-            let val = fib(x - 1, cache) + fib(x - 2, cache);
-            cache.insert(x, val);
-            val
-        }
-        _ => x as u64,
-    }
-}
-
-
