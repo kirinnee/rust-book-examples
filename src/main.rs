@@ -1,15 +1,18 @@
+use std::error::Error;
 use std::io::stdin;
 
-fn ask_for_input<F>(question: &str, f: F) -> String where F: Fn(&str) -> bool {
+fn ask_for_input<F, T>(question: &str, f: F) -> T where F: (Fn(&str) -> Result<T, Box<dyn Error>>) {
     loop {
         println!("{}", question);
         let mut input = String::new();
         stdin().read_line(&mut input).expect("Failed to read line");
         let out = input.trim();
-        if f(out) {
-            break out.to_string();
-        } else {
-            continue;
+        match f(out) {
+            Ok(e) => break e,
+            Err(e) => {
+                println!("{}", e);
+                continue;
+            }
         }
     }
 }
