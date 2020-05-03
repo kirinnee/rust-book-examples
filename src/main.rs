@@ -1,7 +1,6 @@
-use std::error::Error;
 use std::io::stdin;
 
-fn ask_for_input<F, T>(question: &str, f: F) -> T where F: (Fn(&str) -> Result<T, Box<dyn Error>>) {
+fn ask_for_input<F, T>(question: &str, f: F) -> T where F: (Fn(&str) -> Result<T, String>) {
     loop {
         println!("{}", question);
         let mut input = String::new();
