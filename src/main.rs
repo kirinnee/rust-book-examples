@@ -17,7 +17,25 @@ fn ask_for_input<F, T>(question: &str, f: F) -> T where F: (Fn(&str) -> Result<T
 }
 
 fn main() {
-    println!("Hello World!");
+    let s1 = String::from("Hello ");
+    let s2 = String::from("world!");
+
+    let s3 = s1 + &s2;
+
+    let s4 = "Hello ".to_owned() + "World";
+
+    println!("{}", s3);
+    println!("{}", s4);
+
+    let hello = "Здравствуйте";
+
+    let s = &hello[0..2];
+
+    println!("{}", s);
+
+    for c in "नमस्ते".chars() {
+        println!("{}", c);
+    }
 }
 
 
