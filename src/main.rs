@@ -1,4 +1,5 @@
 use std::io::stdin;
+use std::num::ParseIntError;
 
 fn ask_for_input<F, T>(question: &str, f: F) -> T where F: (Fn(&str) -> Result<T, String>) {
     loop {
@@ -16,8 +17,30 @@ fn ask_for_input<F, T>(question: &str, f: F) -> T where F: (Fn(&str) -> Result<T
     }
 }
 
+fn largest<T: PartialOrd + Copy>(list: &[T]) -> Option<T> {
+    let mut largest = *list.get(0)?;
+
+    for &item in list {
+        if item > largest {
+            largest = item;
+        }
+    }
+    Some(largest)
+}
+
 fn main() {
-    println!("Hello World!");
+    let ask = |x: &str| -> Result<Vec<i64>, String>{
+        x.split_ascii_whitespace().map(|x| x.parse().map_err(|x: ParseIntError| x.to_string())).collect()
+    };
+
+    loop {
+        let numbers = ask_for_input("Enter a integer array: ", ask);
+
+        match largest(&numbers) {
+            Some(huge) => println!("{}", huge),
+            None => println!("Nothing was found :<"),
+        }
+    }
 }
 
 
