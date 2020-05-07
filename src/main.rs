@@ -195,12 +195,7 @@ fn main() {
                 Absolute => stack.mut1(|a| vec![a.abs()]),
                 Max => stack.mut2(|a, b| vec![a.max(b)]),
                 Min => stack.mut2(|a, b| vec![a.min(b)]),
-                Duplicate => {
-                    match stack.last() {
-                        Some(a) => stack.remove_and_add(0, &mut vec![*a]),
-                        None => UnderFlow,
-                    }
-                }
+                Duplicate => stack.mut1(|a| vec![a, a]),
                 Token::Drop => stack.mut1(|_| vec![]),
                 Nip => stack.mut2(|_, b| vec![b]),
             };

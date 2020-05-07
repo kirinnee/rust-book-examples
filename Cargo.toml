@@ -1,10 +1,16 @@
 [package]
-name = "guessing_game"
+name = "stack-machine"
 version = "0.1.0"
 authors = ["kirinnee <kirinnee97@gmail.com>"]
 edition = "2018"
+description = "A simple stack machine like forth without loops and conditions"
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rand = "0.7.3"
+
+
+[profile.release]
+panic = "abort"
+
