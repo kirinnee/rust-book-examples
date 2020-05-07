@@ -1,5 +1,6 @@
 use std::io::stdin;
 
+#[allow(dead_code)]
 fn ask_for_input<F, T>(question: &str, f: F) -> T where F: (Fn(&str) -> Result<T, String>) {
     loop {
         println!("{}", question);
