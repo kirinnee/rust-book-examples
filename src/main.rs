@@ -1,5 +1,7 @@
 use std::io::stdin;
 
+use guessing_game::eat_at_restaurant;
+
 #[allow(dead_code)]
 fn ask_for_input<F, T>(question: &str, f: F) -> T where F: (Fn(&str) -> Result<T, String>) {
     loop {
@@ -18,8 +20,5 @@ fn ask_for_input<F, T>(question: &str, f: F) -> T where F: (Fn(&str) -> Result<T
 }
 
 fn main() {
-    println!("Hello World!");
+    eat_at_restaurant();
 }
-
-
-
