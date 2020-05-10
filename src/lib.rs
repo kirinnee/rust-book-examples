@@ -7,7 +7,6 @@ pub struct Node<T> {
     pub value: RefCell<T>,
     pub parent: RefCell<Weak<Node<T>>>,
     pub children: RefCell<Vec<Rc<Node<T>>>>,
-    self_node: RefCell<Weak<Node<T>>>,
 }
 
 impl<T: Display> Display for Node<T> {
@@ -35,24 +34,21 @@ impl<T: Display> Display for Node<T> {
 
 impl<T: Display> Node<T> {
     pub fn new(value: T) -> Rc<Node<T>> {
-        let x = Rc::new(Node {
+        Rc::new(Node {
             value: RefCell::new(value),
             parent: RefCell::new(Weak::new()),
             children: RefCell::new(vec![]),
-            self_node: RefCell::new(Weak::new()),
-        });
-        *x.self_node.borrow_mut() = Rc::downgrade(&x);
-        x
+        })
     }
 
-    pub fn add_parent(&self, a: &Rc<Node<T>>) {
+    pub fn add_parent(self: &Rc<Self>, a: &Rc<Node<T>>) {
         *self.parent() = Rc::downgrade(a);
-        a.children().push(Rc::clone(&(*self.self_node.borrow()).upgrade().unwrap()));
+        a.children().push(Rc::clone(self));
     }
 
-    pub fn add_child(&self, a: &Rc<Node<T>>) {
+    pub fn add_child(self: &Rc<Self>, a: &Rc<Node<T>>) {
         (*self.children()).push(Rc::clone(a));
-        *a.parent() = Rc::downgrade(&(*self.self_node.borrow()).upgrade().unwrap());
+        *a.parent() = Rc::downgrade(self);
     }
 
     pub fn children_val(&self) -> String {
