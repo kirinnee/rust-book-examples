@@ -1,24 +1,70 @@
-use std::io::stdin;
+trait Pilot {
+    fn fly(&self);
 
-#[allow(dead_code)]
-fn ask_for_input<F, T>(question: &str, f: F) -> T where F: (Fn(&str) -> Result<T, String>) {
-    loop {
-        println!("{}", question);
-        let mut input = String::new();
-        stdin().read_line(&mut input).expect("Failed to read line");
-        let out = input.trim();
-        match f(out) {
-            Ok(e) => break e,
-            Err(e) => {
-                println!("{}", e);
-                continue;
-            }
-        }
+    fn name(&self);
+
+    fn family(&self);
+}
+
+trait Wizard {
+    fn fly(&self) {
+        println!("Abra!");
+    }
+
+    fn name(&self) {
+        println!("Wizard");
+    }
+
+    fn family(&self) {
+        println!("Harry Potter")
     }
 }
 
+struct Human;
+
+impl Wizard for Human {
+    fn fly(&self) {
+        println!("Up!");
+    }
+}
+
+impl Pilot for Human {
+    fn fly(&self) {
+        println!("This is your captain speaking.");
+    }
+
+    fn name(&self) {
+        println!("Pilot");
+    }
+
+    fn family(&self) {
+        println!("FAM TIME");
+    }
+}
+
+impl Human {
+    fn fly(&self) {
+        println!("I can fly...!");
+    }
+
+    fn name(&self) {
+        println!("human");
+    }
+}
+
+
+
 fn main() {
-    println!("Hello World!");
+    let sheryl = Human;
+    sheryl.fly();
+    Pilot::fly(&sheryl);
+    Wizard::fly(&sheryl);
+
+
+    sheryl.name();
+    Pilot::name(&sheryl);
+    Wizard::name(&sheryl);
+
 }
 
 
