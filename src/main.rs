@@ -1,25 +1,21 @@
-use std::io::stdin;
-
-#[allow(dead_code)]
-fn ask_for_input<F, T>(question: &str, f: F) -> T where F: (Fn(&str) -> Result<T, String>) {
-    loop {
-        println!("{}", question);
-        let mut input = String::new();
-        stdin().read_line(&mut input).expect("Failed to read line");
-        let out = input.trim();
-        match f(out) {
-            Ok(e) => break e,
-            Err(e) => {
-                println!("{}", e);
-                continue;
-            }
-        }
-    }
-}
+use std::thread;
+use std::time::Duration;
 
 fn main() {
-    println!("Hello World!");
-}
+    let v = vec![1, 2, 3];
+    let handle = thread::spawn(move || {
+        for i in 1..10 {
+            println!("number {:?} from ", v);
+            thread::sleep(Duration::from_millis(300));
+        }
+    });
 
+
+    handle.join().unwrap();
+    for i in 1..5 {
+        println!("number {} from ", i);
+        thread::sleep(Duration::from_millis(500));
+    }
+}
 
 
