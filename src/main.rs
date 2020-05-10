@@ -1,24 +1,24 @@
-use std::io::stdin;
-
-#[allow(dead_code)]
-fn ask_for_input<F, T>(question: &str, f: F) -> T where F: (Fn(&str) -> Result<T, String>) {
-    loop {
-        println!("{}", question);
-        let mut input = String::new();
-        stdin().read_line(&mut input).expect("Failed to read line");
-        let out = input.trim();
-        match f(out) {
-            Ok(e) => break e,
-            Err(e) => {
-                println!("{}", e);
-                continue;
-            }
-        }
-    }
-}
+use std::sync::{Arc, Mutex};
+use std::thread;
 
 fn main() {
-    println!("Hello World!");
+    let counter = Arc::new(Mutex::new(0));
+
+    let mut handles = vec![];
+    for _ in 0..10 {
+        let counter = Arc::clone(&counter);
+        let handle = thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
+            *num += 1;
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("Result: {}", *counter.lock().unwrap());
 }
 
 
