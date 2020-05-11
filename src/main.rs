@@ -17,8 +17,22 @@ fn ask_for_input<F, T>(question: &str, f: F) -> T where F: (Fn(&str) -> Result<T
     }
 }
 
+#[derive(Debug)]
+struct Color(u32);
+
+
+fn transform(i: u32) -> u64 {
+    i as u64 + i as u64
+}
+
 fn main() {
-    println!("Hello World!");
+    let vec: Vec<_> = (0u32..100).map(Color).collect();
+    println!("{:?}", vec);
+
+    let vec: Vec<_> = (0u32..100).map(transform).collect();
+    println!("{:?}", vec);
+
+
 }
 
 
